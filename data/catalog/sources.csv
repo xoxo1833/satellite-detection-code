@@ -1,0 +1,9 @@
+name,provider,modality,resolution_m,location,access,license,note
+Sentinel-2 L2A COGs,Element 84 / ESA Copernicus,optical multispectral,10,s3://sentinel-cogs ; STAC https://earth-search.aws.element84.com/v1 collection sentinel-2-l2a,"open, no AWS account (aws s3 ls --no-sign-request)","Copernicus free, full and open",default source in config.yaml
+Sentinel-2 Collection 1 L2A,Element 84 / ESA Copernicus,optical multispectral,10,s3://e84-earth-search-sentinel-data ; collection sentinel-2-c1-l2a,"open, no AWS account","Copernicus free, full and open",reported incomplete (missing scenes) as of March 2026; not used
+Umbra SAR Open Data,Umbra,SAR spotlight,0.25,s3://umbra-open-data-catalog,"open, no AWS account",CC BY 4.0,"1,000+ locations in 2026; second source in config.yaml (commented out)"
+Vantor Open Data (formerly Maxar),Vantor,optical very high resolution,,s3://vantor-opendata (us-east-1),"open, no AWS account",CC BY-NC 4.0,pre/post disaster events; full-strip COGs
+NAIP,USDA / Esri,aerial RGB+NIR,0.3-1.0,s3://naip-analytic (requester pays),"AWS account required, requester pays",Public Domain with Attribution,continental US only
+Capella SAR open data,Capella Space,SAR,,AWS Registry of Open Data,open via registry,check registry entry,
+SpaceNet,SpaceNet,optical and SAR with labels,,AWS Registry of Open Data,open via registry,check each dataset,
+SpaceEye-T VVHR Open Data,SI Imaging Services,optical,0.25,registry.opendata.aws/st-open-data,open via registry,check registry entry,

@@ -1,0 +1,22 @@
+name,category,modality,resolution_m,size,coverage,labels,pipeline_use,basis
+LEVIR-CD / CD+,benchmark,optical aerial,0.5,"637 pairs (CD+: 985), 1024x1024","Texas, 2002-2018",building change mask,train/eval detector,search result
+S2Looking,benchmark,optical side-looking,0.5-0.8,"5,000 pairs, 1024x1024, 65,920+ change instances","rural, worldwide",building change mask,stress-test registration,search result
+xBD / xView2,benchmark,optical,~0.5,"9,168 train/tier3 + 933 test + 933 holdout pairs; 850,736 buildings",6 disaster types,building damage levels,infrastructure damage,search result
+OSCD,benchmark,multispectral Sentinel-2,10,24 urban pairs,"urban, worldwide",change mask,spectral baseline,search result
+SYSU-CD,benchmark,optical aerial,0.5,~20k patches,"Hong Kong, 2007-2014",change mask,train/eval detector,search result
+DSIFN-CD,benchmark,optical Google Earth,~2,"6 city scenes, cropped to 256x256",6 Chinese cities,change mask,train/eval detector,search result
+WHU-CD,benchmark,optical aerial,0.075,single scene pair,"Christchurch NZ, 2012 vs 2016",building change mask,construction change,search result
+SECOND,benchmark,optical,~0.5-3,"4,662 pairs, 6 classes",several Chinese cities,semantic change,from-to change classes,search result
+DynamicEarthNet,benchmark,optical Planet,3,"54,750 images",daily time series,dense land-cover,temporal series,search result
+3DCD,benchmark,optical + height,0.5,pairs with DSM change,-,3D height change,height change,search result
+SpaceNet 7,benchmark,optical Planet monthly,4.7,"monthly mosaics, 60 AOIs",worldwide,building tracks,urban growth,"background knowledge, verify"
+fMoW,benchmark,optical,varied,temporal views of facilities,worldwide,facility class,facility time series,"background knowledge, verify"
+LEVIR-CC,language,optical aerial,0.5,"10,077 pairs, 5 captions each",Texas,change captions,VLM description eval,search result
+JL1-CC&QA,language,optical Jilin-1,0.5-0.75,"5,000 pairs; 17,021 captions; 20,060 QA",-,captions + QA,VLM description eval,search result
+ChangeIMTI,language,optical,varied,instruction-tuning set,-,"captioning, yes/no, counting, localization",VLM tuning/eval,search result
+Vantor (Maxar) Open Data,archive,optical VHR,~0.3-0.5,"event collections, STAC",disaster events,none,pre/post event pairs,search result
+Umbra SAR Open Data,archive,SAR spotlight,0.16-0.25,"1,000+ locations, time series, CC BY 4.0",worldwide incl. infrastructure,none,SAR change pairs,search result
+Sentinel-2 L2A,archive,multispectral,10,"global, 5-day revisit",global,none,large-scale change,background knowledge
+Landsat,archive,multispectral,30,global archive,global,none,long time series,"background knowledge, verify"
+NAIP,archive,optical aerial,0.6-1,US repeat coverage,USA,none,aerial pairs,"background knowledge, verify"
+Capella / ICEYE samples,archive,SAR,~0.5,sample sets,varied,none,SAR change pairs,"background knowledge, verify"

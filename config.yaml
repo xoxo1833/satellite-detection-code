@@ -1,0 +1,153 @@
+paths:
+  work: runs
+  catalog: runs/catalog.csv
+  pairs: runs/pairs.csv
+  prepared: runs/prepared
+  reports: runs/reports
+
+aoi:
+  bbox: [73.03, 18.96, 73.09, 19.02]
+  datetime: "2021-01-01/2026-03-31"
+
+sources:
+  - name: sentinel2
+    type: api
+    url: https://earth-search.aws.element84.com/v1
+    collections: [sentinel-2-l2a]
+    modality: optical
+    query: {"eo:cloud_cover": {lt: 15}}
+    assets: [red, green, blue, nir]
+    mask_asset: scl
+    mask_classes: [3, 8, 9, 10]
+    gsd: 10
+    max_items: 300
+# Umbra static catalog is large to traverse; enable only when needed
+#   - name: umbra
+#     type: static
+#     url: https://s3.us-west-2.amazonaws.com/umbra-open-data-catalog/stac/catalog.json
+#     modality: sar
+#     assets: [GEC]
+#     gsd: 0.5
+#     max_items: 300
+#     max_scan: 20000
+
+pairing:
+  min_gap_days: 30
+  max_gap_days: 2500
+  target_gap_days: 365
+  windows:
+    before: "2021-01-01/2021-03-31"
+    after: "2026-01-01/2026-03-31"
+  min_aoi_coverage: 0.8
+  max_gsd_ratio: 1.25
+  max_off_nadir_diff: 10
+  same_platform: false
+  same_orbit_state: true
+  max_cloud: 15
+  max_pairs_per_source: 3
+  strict_missing: false
+  target_res_m: null
+  max_pixels: 36000000
+  nodata_value: 0
+  min_valid_fraction: 0.7
+  reg_max_shift_px: 1.5
+  reg_repair_limit_px: 8
+  reg_min_response: 0.05
+  pct_low: 2
+  pct_high: 98
+  match_histograms: true
+  sar_input: amplitude
+  dedupe_cell_deg: 0.05
+
+detect:
+  method_by_modality: {optical: classical, sar: classical}
+  bands: [0, 1, 2]
+  blur_sigma: {optical: 1.5, sar: 3.0}
+  threshold: {type: robust_z, value: 3.5}
+  morph_kernel: 3
+  min_area_px: 30
+  learned:
+    checkpoint: runs/siamunet.pt
+    device: cpu
+    tile: 256
+    overlap: 32
+    threshold: 0.5
+
+model:
+  in_channels: 3
+  widths: [32, 64, 128, 256]
+
+train:
+  root: data/LEVIR-CD
+  dirs: {a: A, b: B, label: label}
+  splits: {train: train, val: val}
+  patch: 256
+  batch: 8
+  epochs: 40
+  lr: 0.001
+  device: cpu
+  workers: 2
+  seed: 0
+  pos_weight: 5.0
+  dice_weight: 1.0
+  out: runs/siamunet.pt
+
+vlm:
+  model: claude-sonnet-5-5
+  judge_model: claude-sonnet-5-5
+  max_tokens: 700
+  chip_px: 384
+  context_pad: 0.6
+  min_chip_px: 48
+  jpeg_quality: 90
+  rgb_idx: [0, 1, 2]
+  display_pct: [2, 98]
+
+interpret:
+  max_regions: 20
+  swap_rate: 1.0
+  null_rate: 0.5
+  judge: true
+  seed: 0
+  ring_px: 12
+  min_prob: 0.5
+  min_contrast: 0.2
+  reject_on: [null_hallucination, swap_inconsistent, judge_rejected, weak_pixel_evidence]
+  summarize: true
+  change_types: [new_construction, demolition, road_change, vegetation_gain, vegetation_loss, water_change, vehicle_or_object_movement, ground_disturbance, other]
+  nuisance_types: [none, shadow, seasonal_vegetation, cloud, illumination, registration_error, sensor_artifact]
+  inverse_types:
+    new_construction: demolition
+    demolition: new_construction
+    vegetation_gain: vegetation_loss
+    vegetation_loss: vegetation_gain
+    road_change: road_change
+    water_change: water_change
+    vehicle_or_object_movement: vehicle_or_object_movement
+    ground_disturbance: ground_disturbance
+    other: other
+
+prompts:
+  system: >
+    You are an imagery analyst comparing two co-registered satellite images of the same location.
+    Report only changes visible in the images. Do not speculate about purpose or ownership.
+    If the difference is explainable by illumination, shadow, season, cloud or sensor effects, say so.
+    Answer with one JSON object and nothing else.
+  describe: >
+    Image 1 is BEFORE ({before_date}), image 2 is AFTER ({after_date}), image 3 is AFTER with the
+    candidate region outlined. Modality: {modality}. Pixel size about {gsd} m.
+    Return JSON with keys: change_detected (bool), change_type (one of {types}),
+    object (short noun phrase), before_state, after_state, description (one sentence),
+    nuisance (one of {nuisance}), confidence (0 to 1).
+  judge: >
+    Image 1 is BEFORE ({before_date}), image 2 is AFTER ({after_date}), image 3 is AFTER with the
+    region outlined. A candidate claim: {claim}
+    Decide whether the images support the claim. Return JSON with keys: supported (bool), reason (one sentence).
+  summary: >
+    Summarize these verified and uncertain changes between {before_date} and {after_date} in at most five
+    sentences, plainly and without speculation. Findings: {findings}
+
+export:
+  out_dir: data/real
+  preview_px: 1024
+  files: [before.tif, after.tif, valid.tif, prob.tif, pair.json, regions.json]

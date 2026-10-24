@@ -1,0 +1,11 @@
+numpy>=2.0
+pandas>=2.2
+pyyaml>=6.0
+opencv-python-headless>=4.9
+scikit-image>=0.24
+scipy>=1.13
+rasterio>=1.4
+shapely>=2.0
+pyproj>=3.6
+pystac-client>=0.8
+anthropic>=0.40
