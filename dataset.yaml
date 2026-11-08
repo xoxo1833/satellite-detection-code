@@ -1,0 +1,110 @@
+output:
+  root: dataset
+  jpeg_quality: 95
+  max_side_px: 1024
+  min_panel_px: 480
+  banner_px: 34
+  gap_px: 12
+  font_scale: 0.8
+  font_thickness: 2
+  missing_date_label: date not published
+  display_pct: [2, 98]
+  report_file: dataset/DOWNLOAD_REPORT.md
+  index_file: dataset/INDEX.csv
+
+sentinel2:
+  enabled: true
+  work_dir: runs/sites
+  pairs_per_site: 1
+  match_histograms: false
+  source_url: https://registry.opendata.aws/sentinel-2-l2a-cogs/
+  license: Copernicus Sentinel data, free, full and open
+  sites:
+    - name: navi-mumbai-airport
+      note: Greenfield airport construction, Navi Mumbai, India
+      bbox: [73.03, 18.96, 73.09, 19.02]
+      tries:
+        - {before: "2019-01-01/2019-03-31", after: "2026-01-01/2026-03-31"}
+        - {before: "2018-12-01/2019-04-30", after: "2025-11-01/2026-04-30"}
+    - name: western-sydney-airport
+      note: Greenfield airport construction (earthworks began September 2018), Badgerys Creek, Australia
+      bbox: [150.67, -33.93, 150.76, -33.85]
+      tries:
+        - {before: "2019-01-01/2019-03-31", after: "2026-01-01/2026-03-31"}
+        - {before: "2019-01-01/2019-06-30", after: "2025-09-01/2026-06-30"}
+    - name: gerd-dam
+      note: Grand Ethiopian Renaissance Dam and reservoir (filling began July 2020), Ethiopia
+      bbox: [35.04, 11.15, 35.15, 11.27]
+      tries:
+        - {before: "2019-01-01/2019-03-31", after: "2026-01-01/2026-03-31"}
+        - {before: "2019-11-01/2020-04-30", after: "2025-11-01/2026-04-30"}
+
+public:
+  levir_cd:
+    enabled: true
+    name: LEVIR-CD (LEVIR-CD+ mirror)
+    kind: building change, aerial imagery
+    hf_repo: blanchon/LEVIR_CDPlus
+    hf_split: test
+    count: 12
+    before_dir: external/LEVIR-CD/A
+    after_dir: external/LEVIR-CD/B
+    pattern: "*.png"
+    tile_px: null
+    seed: 0
+    source_url: https://justchenhao.github.io/LEVIR/
+    license: check the dataset page; the Hugging Face mirror lists the license as unknown
+    date_note: LEVIR-CD does not publish per-pair acquisition dates. The dataset paper gives a range of 2002 to 2018 for the whole set.
+    how_to_obtain: Download LEVIR-CD from the dataset page, extract so that external/LEVIR-CD/A and external/LEVIR-CD/B exist.
+  whu_cd:
+    enabled: true
+    name: WHU-CD
+    kind: building change, aerial imagery, Christchurch New Zealand
+    before_dir: external/WHU-CD/2012/image
+    after_dir: external/WHU-CD/2016/image
+    pattern: "*.tif"
+    count: 8
+    tile_px: 1024
+    seed: 0
+    before_date: "2012"
+    after_date: "2016"
+    source_url: https://gpcv.whu.edu.cn/data/building_dataset.html
+    license: check the dataset page
+    date_note: Only the acquisition years are published (2012 and 2016).
+    how_to_obtain: Download the two-period image data from the dataset page and extract the 2012 and 2016 image folders to external/WHU-CD/2012/image and external/WHU-CD/2016/image (adjust before_dir and after_dir in dataset.yaml if your folders differ).
+  oscd:
+    enabled: true
+    name: OSCD (Onera Satellite Change Detection)
+    kind: urban change, Sentinel-2 multispectral
+    root: external/OSCD/images
+    dirs: [imgs_1_rect, imgs_2_rect]
+    bands: [B04, B03, B02]
+    dates_file: dates.txt
+    count: 10
+    source_url: https://ieee-dataport.org/open-access/oscd-onera-satellite-change-detection
+    license: change labels CC BY-NC-SA; check the dataset page
+    date_note: Acquisition dates are read from each city's dates.txt.
+    how_to_obtain: Download the image archive from IEEE DataPort (free account sign-in) and extract it to external/OSCD/images so that each city folder contains imgs_1_rect, imgs_2_rect and dates.txt.
+  xbd:
+    enabled: true
+    name: xBD (xView2)
+    kind: building damage, pre and post disaster, very high resolution
+    root: external/xBD/train
+    per_disaster: 1
+    max_disasters: 10
+    source_url: https://xview2.org/
+    license: non-commercial (CC BY-NC-SA; the version differs between sources, check xview2.org)
+    date_note: Capture dates are read from the label JSON metadata.
+    how_to_obtain: Register at xview2.org, download the training images and labels, and extract so that external/xBD/train/images and external/xBD/train/labels exist.
+  spacenet7:
+    enabled: true
+    name: SpaceNet 7 (Planet monthly mosaics)
+    kind: urban development, 4 m monthly mosaics
+    s3_http: https://spacenet-dataset.s3.amazonaws.com
+    train_prefix: spacenet/SN7_buildings/train/
+    aoi_count: 6
+    min_gap_months: 12
+    source_url: https://spacenet.ai/sn7-challenge/
+    license: CC BY-SA 4.0
+    date_note: Monthly mosaics; the date is the year and month of the mosaic.
+    how_to_obtain: Public AWS bucket s3://spacenet-dataset/spacenet/SN7_buildings/ (no account needed). Check your internet access to spacenet-dataset.s3.amazonaws.com.

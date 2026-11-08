@@ -1,0 +1,10 @@
+{
+  "dataset": "SpaceNet 7 (Planet monthly mosaics)",
+  "kind": "urban development, 4 m monthly mosaics",
+  "source_url": "https://spacenet.ai/sn7-challenge/",
+  "license": "CC BY-SA 4.0",
+  "date_note": "Monthly mosaics; the date is the year and month of the mosaic.",
+  "before_date": "2018-01",
+  "after_date": "2020-01",
+  "aoi": "L15-0357E-1223N_1429_3296_13"
+}

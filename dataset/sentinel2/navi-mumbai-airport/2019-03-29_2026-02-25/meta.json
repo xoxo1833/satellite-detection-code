@@ -1,0 +1,20 @@
+{
+  "dataset": "Sentinel-2 L2A",
+  "site": "navi-mumbai-airport",
+  "note": "Greenfield airport construction, Navi Mumbai, India",
+  "before_date": "2019-03-29",
+  "after_date": "2026-02-25",
+  "before_scene": "S2B_43QBB_20190329_1_L2A",
+  "after_scene": "S2C_43QBB_20260225_0_L2A",
+  "gsd_m": 10,
+  "crs": "EPSG:32643",
+  "bbox_lonlat": [
+    73.03,
+    18.96,
+    73.09,
+    19.02
+  ],
+  "source_url": "https://registry.opendata.aws/sentinel-2-l2a-cogs/",
+  "license": "Copernicus Sentinel data, free, full and open",
+  "processing": "windowed read of cloud-optimised GeoTIFFs, reprojected to UTM, per-band percentile stretch for display; no detections or outlines drawn"
+}

@@ -1,0 +1,20 @@
+{
+  "dataset": "Sentinel-2 L2A",
+  "site": "gerd-dam",
+  "note": "Grand Ethiopian Renaissance Dam and reservoir (filling began July 2020), Ethiopia",
+  "before_date": "2019-11-21",
+  "after_date": "2026-03-04",
+  "before_scene": "S2A_36PYT_20191121_1_L2A",
+  "after_scene": "S2B_36PYT_20260304_0_L2A",
+  "gsd_m": 10,
+  "crs": "EPSG:32636",
+  "bbox_lonlat": [
+    35.04,
+    11.15,
+    35.15,
+    11.27
+  ],
+  "source_url": "https://registry.opendata.aws/sentinel-2-l2a-cogs/",
+  "license": "Copernicus Sentinel data, free, full and open",
+  "processing": "windowed read of cloud-optimised GeoTIFFs, reprojected to UTM, per-band percentile stretch for display; no detections or outlines drawn"
+}

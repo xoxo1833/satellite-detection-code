@@ -1,0 +1,22 @@
+folder,dataset,before_date,after_date
+levir_cd/test_0000,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0001,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0002,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0003,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0004,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0005,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0006,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0007,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0008,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0009,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0010,LEVIR-CD (LEVIR-CD+ mirror),,
+levir_cd/test_0011,LEVIR-CD (LEVIR-CD+ mirror),,
+sentinel2/gerd-dam/2019-11-21_2026-03-04,Sentinel-2 L2A,2019-11-21,2026-03-04
+sentinel2/navi-mumbai-airport/2019-03-29_2026-02-25,Sentinel-2 L2A,2019-03-29,2026-02-25
+sentinel2/western-sydney-airport/2019-01-15_2026-01-28,Sentinel-2 L2A,2019-01-15,2026-01-28
+spacenet7/L15-0331E-1257N_1327_3160_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2020-01
+spacenet7/L15-0357E-1223N_1429_3296_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2020-01
+spacenet7/L15-0358E-1220N_1433_3310_13,SpaceNet 7 (Planet monthly mosaics),2018-02,2020-01
+spacenet7/L15-0361E-1300N_1446_2989_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2020-01
+spacenet7/L15-0368E-1245N_1474_3210_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2020-01
+spacenet7/L15-0387E-1276N_1549_3087_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2019-12

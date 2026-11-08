@@ -1,8 +1,39 @@
-# Satellite change detection with agentic pairing and VLM interpretation
+# Satellite change detection: real before-and-after image dataset and processing code
 
-Pipeline that (1) discovers real multi-temporal satellite imagery from open AWS-hosted STAC catalogs, (2) builds and verifies before/after pairs of the same location, (3) detects and localizes changes, and (4) describes and verifies each change with a vision-language model (Claude). All imagery is real Sentinel-2 data from the AWS Registry of Open Data. No synthetic or generated imagery is used.
+The deliverable of this repository is the **dataset**: real satellite and aerial image pairs, each stored in its own folder with the earlier image, the later image, the two side by side, and the dates of both. No detector output, red outlines or VLM text appears in the dataset. The processing code (detector and VLM interpretation) is kept separately and is not part of the dataset.
 
-## Setup (Windows PowerShell)
+## Dataset layout
+
+```
+dataset/
+  INDEX.csv                    folder, dataset, before_date, after_date (optional overview)
+  DOWNLOAD_REPORT.md           which sources were downloaded, and the exact error for any that were not
+  sentinel2/<site>/<before>_<after>/   before.jpg  after.jpg  side_by_side.jpg  meta.json
+  levir_cd/<pair>/             same four files
+  whu_cd/<pair>/
+  oscd/<city>/
+  xbd/<disaster>/<pair>/
+  spacenet7/<aoi>/
+```
+
+`meta.json` holds both dates, the source, location, license and processing notes. Images are JPEG quality 95. Sentinel-2 images use a per-band percentile stretch for display and are not radiometrically calibrated.
+
+## Sources
+
+| Source | Imagery | Dates |
+|---|---|---|
+| Sentinel-2 L2A (AWS open data), three sites: Navi Mumbai airport, Western Sydney airport, Grand Ethiopian Renaissance Dam | 10 m, real scenes selected automatically | exact acquisition dates from the scene metadata |
+| LEVIR-CD | 0.5 m aerial, building change | not published per pair (dataset range 2002 to 2018) |
+| WHU-CD | 7.5 cm aerial, Christchurch NZ | 2012 and 2016 (years only) |
+| OSCD | 10 m Sentinel-2, urban change | from each city's `dates.txt` |
+| xBD | very high resolution, pre and post disaster | capture dates from label metadata |
+| SpaceNet 7 | 4 m Planet monthly mosaics | year and month |
+
+`docs/sources.csv` and `docs/datasets.csv` list further open sources and benchmarks.
+
+xBD is non-commercial (CC BY-NC-SA) and Vantor open data is CC BY-NC. Both are used here for non-commercial academic work only. SpaceNet 7 is CC BY-SA 4.0. Check each license before reuse.
+
+## Reproduce the dataset
 
 ```powershell
 git clone https://github.com/xoxo1833/satellite-detection-code.git
@@ -10,74 +41,36 @@ cd satellite-detection-code
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+python build_dataset.py --config config.yaml --dataset-config dataset.yaml
 ```
 
-If activation is blocked, run `Set-ExecutionPolicy -Scope Process Bypass` first. Python 3.10 or newer. Internet access is required; no AWS account or credentials are needed.
+Internet access is required. No AWS account is needed. The script downloads automatically from public AWS buckets (Sentinel-2, SpaceNet 7) and from a Hugging Face mirror (LEVIR-CD+). For WHU-CD, OSCD and xBD, download the archives yourself, extract them under `external/` as described in `dataset.yaml` (`how_to_obtain` for each source), and run the same command. Add `--only sentinel2 oscd` to build a subset.
 
-## Build the dataset (real imagery)
+Every source that cannot be fetched is listed in `dataset/DOWNLOAD_REPORT.md` with the exact error and how to obtain it. Sites, date windows and counts are set in `dataset.yaml`.
+
+## Processing code (separate from the dataset)
+
+`run.py`, `pairing.py`, `detect.py`, `interpret.py` and the other modules implement automated pair discovery and verification, a classical change detector, and VLM-based description with verification. They write only to `runs/`, never to `dataset/`.
 
 ```powershell
 python run.py dataset --config config.yaml
 ```
 
-This runs four stages, which can also be run one at a time (`discover`, `pair`, `detect`, `export`):
+The VLM backend is configured under `vlm` in `config.yaml` (Gemini free tier, a local Ollama model, or Anthropic). Optional learned detector: `pip install -r requirements-learned.txt`, then `python run.py train --config config.yaml`.
 
-1. `discover` queries the Element 84 Earth Search STAC API (`sentinel-2-l2a`, backed by the public `sentinel-cogs` bucket) for scenes over the area of interest and writes `runs/catalog.csv`.
-2. `pair` selects one scene from the "before" window and one from the "after" window (lowest combined cloud cover, full coverage of the area), reads only the needed window from the cloud-hosted COGs, masks cloud and shadow with the scene classification layer, checks registration, histogram-matches the pair and writes aligned GeoTIFFs. Verdicts and rejection reasons are in `runs/pairs.csv`.
-3. `detect` computes a change-probability map and vectorizes changed regions.
-4. `export` copies each accepted pair to `data/real/<pair_id>/` with `before.jpg`, `after.jpg` and `changes.jpg` previews.
-
-Example configuration: Navi Mumbai International Airport (about 1,160 ha at Ulwe, opened December 2025), before window January to March 2021, after window January to March 2026. Both windows are in the dry season to reduce seasonal differences. Change `aoi.bbox` and `pairing.windows` in `config.yaml` to use another site.
-
-Commit the results so the dataset travels with the code:
-
-```powershell
-git add data/real
-git commit -m "Add real Sentinel-2 pairs"
-git push
-```
-
-Keep the area small (a few km across) so files stay under GitHub's size limits.
-
-## VLM interpretation
-
-```powershell
-$env:ANTHROPIC_API_KEY = "your-key"
-python run.py interpret --config config.yaml
-```
-
-For each region the VLM sees before, after and outlined crops and returns a structured description. Each claim is checked by a swap test (reversed order must invert the change), a null test (identical images must report no change), pixel-evidence contrast, a nuisance flag, and an independent judge call. Output: `runs/reports/<pair_id>/report.geojson`, with status `verified`, `uncertain` or `rejected`. Model names and prompts are in the config.
-
-## Open imagery sources
-
-`data/catalog/sources.csv` lists AWS-hosted and other open sources (Sentinel-2, Umbra SAR, Vantor open data, NAIP, Capella, SpaceNet) with bucket, access and license. `data/catalog/datasets.csv` lists labelled change-detection benchmarks. Respect each license: Vantor open data is CC BY-NC, and NAIP sits in a requester-pays bucket.
-
-## Optional learned detector
-
-```powershell
-pip install -r requirements-learned.txt
-python run.py train --config config.yaml
-```
-
-Expects a LEVIR-CD style folder (`train/A`, `train/B`, `train/label`, same for `val`) at `train.root`. Afterwards set `detect.method_by_modality.optical` to `learned`.
-
-## Repository layout
+## Files
 
 | Path | Purpose |
 |---|---|
-| `run.py` | Command-line entry point for all stages |
-| `discover.py` | STAC discovery and metadata normalization |
-| `pairing.py` | Pair selection, temporal/spatial/radiometric verification, preparation |
-| `detect.py`, `model.py`, `train.py` | Classical and learned change detection, training |
-| `interpret.py` | VLM description and verification |
-| `export_pair.py` | Copies accepted pairs into `data/real/` with JPEG previews |
-| `config.yaml` | All parameters, prompts and sources |
-| `data/` | Real pairs, source and dataset catalogs |
-| `notebooks/` | Notebook version of the pipeline |
+| `build_dataset.py`, `public_sets.py`, `pair_io.py`, `dataset.yaml` | Build the image dataset |
+| `discover.py`, `pairing.py` | Search AWS STAC catalogs, select and verify Sentinel-2 pairs |
+| `run.py`, `detect.py`, `interpret.py`, `model.py`, `train.py`, `summarize.py` | Processing code |
+| `config.yaml` | Parameters for discovery, pairing, detection and VLM |
+| `docs/` | Source and benchmark catalogs |
+| `notebooks/` | Notebook version |
 
-## Status and limitations
+## Limitations
 
-- The live stages were not run end to end by the author in the development environment, because it could not reach the AWS-hosted imagery. The pairing, verification, detection and interpretation logic was tested on locally generated test arrays only; those test files are not part of this repository. Report any failure you hit when running on real data.
-- Classical detector thresholds are untuned, and real scenes will produce many false regions from vegetation, water and lighting. The VLM verification stage exists to filter these.
-- Sentinel-2 processing baselines differ across years, so radiometric offsets between 2021 and 2026 are possible. The pipeline stretches each image and histogram-matches the pair, which reduces but does not remove this.
-- Only openly licensed imagery is intended. Report observable change only.
+- `dataset/` contents depend on what the build could download; read `DOWNLOAD_REPORT.md`.
+- LEVIR-CD has no per-pair dates, and WHU-CD only years, because the datasets do not publish more.
+- Sentinel-2 scene selection takes the lowest-cloud scenes inside each date window. Check each `side_by_side.jpg` before relying on a pair.

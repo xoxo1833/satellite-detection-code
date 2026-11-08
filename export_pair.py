@@ -25,6 +25,9 @@ def export(d, cfg):
     for name in ec["files"]:
         if (d / name).exists():
             shutil.copy2(d / name, out / name)
+    rep = Path(cfg["paths"]["reports"]) / d.name / "report.geojson"
+    if rep.exists():
+        shutil.copy2(rep, out / "report.geojson")
     with rasterio.open(d / "before.tif") as f:
         a = f.read()
     with rasterio.open(d / "after.tif") as f:

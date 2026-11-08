@@ -1,0 +1,9 @@
+{
+  "dataset": "LEVIR-CD (LEVIR-CD+ mirror)",
+  "kind": "building change, aerial imagery",
+  "source_url": "https://justchenhao.github.io/LEVIR/",
+  "license": "check the dataset page; the Hugging Face mirror lists the license as unknown",
+  "date_note": "LEVIR-CD does not publish per-pair acquisition dates. The dataset paper gives a range of 2002 to 2018 for the whole set.",
+  "before_date": null,
+  "after_date": null
+}

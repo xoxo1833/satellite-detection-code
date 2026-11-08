@@ -1,0 +1,20 @@
+{
+  "dataset": "Sentinel-2 L2A",
+  "site": "western-sydney-airport",
+  "note": "Greenfield airport construction (earthworks began September 2018), Badgerys Creek, Australia",
+  "before_date": "2019-01-15",
+  "after_date": "2026-01-28",
+  "before_scene": "S2A_56HKH_20190115_0_L2A",
+  "after_scene": "S2C_56HKH_20260128_0_L2A",
+  "gsd_m": 10,
+  "crs": "EPSG:32756",
+  "bbox_lonlat": [
+    150.67,
+    -33.93,
+    150.76,
+    -33.85
+  ],
+  "source_url": "https://registry.opendata.aws/sentinel-2-l2a-cogs/",
+  "license": "Copernicus Sentinel data, free, full and open",
+  "processing": "windowed read of cloud-optimised GeoTIFFs, reprojected to UTM, per-band percentile stretch for display; no detections or outlines drawn"
+}

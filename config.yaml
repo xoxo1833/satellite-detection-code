@@ -33,7 +33,7 @@ sources:
 
 pairing:
   min_gap_days: 30
-  max_gap_days: 2500
+  max_gap_days: 4000
   target_gap_days: 365
   windows:
     before: "2021-01-01/2021-03-31"
@@ -93,9 +93,16 @@ train:
   out: runs/siamunet.pt
 
 vlm:
-  model: claude-sonnet-5-5
-  judge_model: claude-sonnet-5-5
+  provider: openai_compatible
+  base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+  api_key_env: GEMINI_API_KEY
+  model: gemini-flash-latest
+  judge_model: gemini-flash-latest
   max_tokens: 700
+  min_interval_s: 6
+  retries: 5
+  backoff_s: 20
+  fatal_status: [400, 401, 403, 404]
   chip_px: 384
   context_pad: 0.6
   min_chip_px: 48
@@ -104,7 +111,7 @@ vlm:
   display_pct: [2, 98]
 
 interpret:
-  max_regions: 20
+  max_regions: 8
   swap_rate: 1.0
   null_rate: 0.5
   judge: true
@@ -148,6 +155,5 @@ prompts:
     sentences, plainly and without speculation. Findings: {findings}
 
 export:
-  out_dir: data/real
-  preview_px: 1024
-  files: [before.tif, after.tif, valid.tif, prob.tif, pair.json, regions.json]
+  results_file: RESULTS.md
+  top_changes: 10

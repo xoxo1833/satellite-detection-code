@@ -1,8 +1,9 @@
 import base64
 import json
+import os
 import random
+import time
 from pathlib import Path
-import anthropic
 import cv2
 import numpy as np
 import rasterio
@@ -21,10 +22,56 @@ def parse_json(text):
         return None
 
 
+def to_openai(system, content):
+    parts = []
+    for c in content:
+        if c["type"] == "text":
+            parts.append({"type": "text", "text": c["text"]})
+        else:
+            src = c["source"]
+            parts.append({"type": "image_url", "image_url": {"url": f"data:{src['media_type']};base64,{src['data']}"}})
+    return [{"role": "system", "content": system}, {"role": "user", "content": parts}]
+
+
+class Backend:
+    def __init__(self, vc):
+        self.vc = vc
+        self.last = 0.0
+        if vc["provider"] == "anthropic":
+            import anthropic
+            self.client = anthropic.Anthropic(api_key=os.environ[vc["api_key_env"]])
+        else:
+            from openai import OpenAI
+            self.client = OpenAI(base_url=vc["base_url"], api_key=os.environ[vc["api_key_env"]])
+
+    def _call(self, model, system, content, max_tokens):
+        if self.vc["provider"] == "anthropic":
+            r = self.client.messages.create(model=model, max_tokens=max_tokens, system=system,
+                                            messages=[{"role": "user", "content": content}])
+            return "".join(b.text for b in r.content if b.type == "text")
+        r = self.client.chat.completions.create(model=model, max_tokens=max_tokens, messages=to_openai(system, content))
+        return r.choices[0].message.content or ""
+
+    def complete(self, model, system, content, max_tokens):
+        for k in range(self.vc["retries"]):
+            wait = self.vc["min_interval_s"] - (time.time() - self.last)
+            if wait > 0:
+                time.sleep(wait)
+            try:
+                text = self._call(model, system, content, max_tokens)
+                self.last = time.time()
+                return text
+            except Exception as e:
+                self.last = time.time()
+                if getattr(e, "status_code", None) in self.vc["fatal_status"]:
+                    raise
+                log.warning("VLM call failed (%s); retry %d of %d", e, k + 1, self.vc["retries"])
+                time.sleep(self.vc["backoff_s"] * (k + 1))
+        raise RuntimeError("VLM call failed after all retries")
+
+
 def call_vlm(client, model, system, content, max_tokens):
-    r = client.messages.create(model=model, max_tokens=max_tokens, system=system,
-                               messages=[{"role": "user", "content": content}])
-    return "".join(b.text for b in r.content if b.type == "text")
+    return client.complete(model, system, content, max_tokens)
 
 
 def to_display(arr, modality, vc):
@@ -169,5 +216,5 @@ def interpret_pair(d, cfg, client):
 
 
 def run(cfg, pair_dirs):
-    client = anthropic.Anthropic()
+    client = Backend(cfg["vlm"])
     return {str(d): interpret_pair(d, cfg, client) for d in pair_dirs}

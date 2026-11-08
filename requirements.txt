@@ -9,3 +9,6 @@ shapely>=2.0
 pyproj>=3.6
 pystac-client>=0.8
 anthropic>=0.40
+openai>=1.40
+datasets>=2.19
+pillow>=10
