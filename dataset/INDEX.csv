@@ -11,6 +11,16 @@ levir_cd/test_0008,LEVIR-CD (LEVIR-CD+ mirror),,
 levir_cd/test_0009,LEVIR-CD (LEVIR-CD+ mirror),,
 levir_cd/test_0010,LEVIR-CD (LEVIR-CD+ mirror),,
 levir_cd/test_0011,LEVIR-CD (LEVIR-CD+ mirror),,
+oscd/abudhabi,OSCD (Onera Satellite Change Detection),2016-01-20,2018-03-28
+oscd/beihai,OSCD (Onera Satellite Change Detection),2016-12-09,2018-03-09
+oscd/bercy,OSCD (Onera Satellite Change Detection),2016-11-30,2017-08-29
+oscd/brasilia,OSCD (Onera Satellite Change Detection),2015-09-16,2017-10-17
+oscd/cupertino,OSCD (Onera Satellite Change Detection),2015-09-18,2018-03-26
+oscd/hongkong,OSCD (Onera Satellite Change Detection),2016-09-27,2018-03-23
+oscd/milano,OSCD (Onera Satellite Change Detection),2016-12-28,2018-01-22
+oscd/mumbai,OSCD (Onera Satellite Change Detection),2015-11-30,2018-03-19
+oscd/norcia,OSCD (Onera Satellite Change Detection),2015-07-11,2017-10-18
+oscd/pisa,OSCD (Onera Satellite Change Detection),2015-07-04,2018-02-11
 sentinel2/gerd-dam/2019-11-21_2026-03-04,Sentinel-2 L2A,2019-11-21,2026-03-04
 sentinel2/navi-mumbai-airport/2019-03-29_2026-02-25,Sentinel-2 L2A,2019-03-29,2026-02-25
 sentinel2/western-sydney-airport/2019-01-15_2026-01-28,Sentinel-2 L2A,2019-01-15,2026-01-28
@@ -20,3 +30,11 @@ spacenet7/L15-0358E-1220N_1433_3310_13,SpaceNet 7 (Planet monthly mosaics),2018-
 spacenet7/L15-0361E-1300N_1446_2989_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2020-01
 spacenet7/L15-0368E-1245N_1474_3210_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2020-01
 spacenet7/L15-0387E-1276N_1549_3087_13,SpaceNet 7 (Planet monthly mosaics),2018-01,2019-12
+whu_cd/0_0,WHU-CD,2012-04,2016
+whu_cd/0_176,WHU-CD,2012-04,2016
+whu_cd/0_253,WHU-CD,2012-04,2016
+whu_cd/0_330,WHU-CD,2012-04,2016
+whu_cd/0_408,WHU-CD,2012-04,2016
+whu_cd/0_486,WHU-CD,2012-04,2016
+whu_cd/0_563,WHU-CD,2012-04,2016
+whu_cd/0_640,WHU-CD,2012-04,2016

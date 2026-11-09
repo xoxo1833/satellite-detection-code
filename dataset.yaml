@@ -10,6 +10,7 @@ output:
   missing_date_label: date not published
   display_pct: [2, 98]
   report_file: dataset/DOWNLOAD_REPORT.md
+  state_file: dataset/report_state.json
   index_file: dataset/INDEX.csv
 
 sentinel2:
@@ -60,18 +61,18 @@ public:
     enabled: true
     name: WHU-CD
     kind: building change, aerial imagery, Christchurch New Zealand
-    before_dir: external/WHU-CD/2012/image
-    after_dir: external/WHU-CD/2016/image
+    before_dir: external/WHU-CD/Building change detection dataset_add/1. The two-period image data/2012/splited_images/test/image
+    after_dir: external/WHU-CD/Building change detection dataset_add/1. The two-period image data/2016/splited_images/test/image
     pattern: "*.tif"
     count: 8
     tile_px: 1024
     seed: 0
-    before_date: "2012"
+    before_date: "2012-04"
     after_date: "2016"
     source_url: https://gpcv.whu.edu.cn/data/building_dataset.html
     license: check the dataset page
-    date_note: Only the acquisition years are published (2012 and 2016).
-    how_to_obtain: Download the two-period image data from the dataset page and extract the 2012 and 2016 image folders to external/WHU-CD/2012/image and external/WHU-CD/2016/image (adjust before_dir and after_dir in dataset.yaml if your folders differ).
+    date_note: The source page gives April 2012 for the earlier images and the year 2016 for the later images.
+    how_to_obtain: Download Building change detection dataset_add.zip from the dataset page and extract it into external/WHU-CD (adjust before_dir and after_dir in dataset.yaml if your folders differ).
   oscd:
     enabled: true
     name: OSCD (Onera Satellite Change Detection)
@@ -84,7 +85,7 @@ public:
     source_url: https://ieee-dataport.org/open-access/oscd-onera-satellite-change-detection
     license: change labels CC BY-NC-SA; check the dataset page
     date_note: Acquisition dates are read from each city's dates.txt.
-    how_to_obtain: Download the image archive from IEEE DataPort (free account sign-in) and extract it to external/OSCD/images so that each city folder contains imgs_1_rect, imgs_2_rect and dates.txt.
+    how_to_obtain: Sign in to IEEE DataPort with a free IEEE account, download Onera Satellite Change Detection dataset - Images.zip, and extract it into external/OSCD/images.
   xbd:
     enabled: true
     name: xBD (xView2)
@@ -95,7 +96,7 @@ public:
     source_url: https://xview2.org/
     license: non-commercial (CC BY-NC-SA; the version differs between sources, check xview2.org)
     date_note: Capture dates are read from the label JSON metadata.
-    how_to_obtain: Register at xview2.org, download the training images and labels, and extract so that external/xBD/train/images and external/xBD/train/labels exist.
+    how_to_obtain: Register at xview2.org, download the training images and labels, and extract them into external/xBD (the images and labels folders may sit at any depth below it).
   spacenet7:
     enabled: true
     name: SpaceNet 7 (Planet monthly mosaics)

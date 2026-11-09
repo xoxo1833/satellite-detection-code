@@ -1,0 +1,57 @@
+{
+  "spacenet7": {
+    "status": "ok",
+    "pairs": 6,
+    "notes": [
+      "restored from the pairs already saved on disk"
+    ]
+  },
+  "sentinel2/western-sydney-airport": {
+    "status": "ok",
+    "pairs": 1,
+    "notes": [
+      "restored from the pairs already saved on disk"
+    ]
+  },
+  "sentinel2/navi-mumbai-airport": {
+    "status": "ok",
+    "pairs": 1,
+    "notes": [
+      "restored from the pairs already saved on disk"
+    ]
+  },
+  "sentinel2/gerd-dam": {
+    "status": "ok",
+    "pairs": 1,
+    "notes": [
+      "restored from the pairs already saved on disk"
+    ]
+  },
+  "oscd": {
+    "status": "ok",
+    "pairs": 10,
+    "notes": [
+      "restored from the pairs already saved on disk"
+    ]
+  },
+  "levir_cd": {
+    "status": "ok",
+    "pairs": 12,
+    "notes": [
+      "restored from the pairs already saved on disk"
+    ]
+  },
+  "whu_cd": {
+    "status": "ok",
+    "pairs": 8,
+    "notes": []
+  },
+  "xbd": {
+    "status": "failed",
+    "pairs": 0,
+    "notes": [
+      "local xBD folder: FileNotFoundError: folder not found: external\\xBD\\train",
+      "How to obtain: Register at xview2.org, download the training images and labels, and extract them into external/xBD (the images and labels folders may sit at any depth below it)."
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "dataset": "OSCD (Onera Satellite Change Detection)",
+  "kind": "urban change, Sentinel-2 multispectral",
+  "source_url": "https://ieee-dataport.org/open-access/oscd-onera-satellite-change-detection",
+  "license": "change labels CC BY-NC-SA; check the dataset page",
+  "date_note": "Acquisition dates are read from each city's dates.txt.",
+  "before_date": "2015-09-16",
+  "after_date": "2017-10-17",
+  "city": "brasilia"
+}

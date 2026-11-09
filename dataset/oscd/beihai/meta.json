@@ -1,0 +1,10 @@
+{
+  "dataset": "OSCD (Onera Satellite Change Detection)",
+  "kind": "urban change, Sentinel-2 multispectral",
+  "source_url": "https://ieee-dataport.org/open-access/oscd-onera-satellite-change-detection",
+  "license": "change labels CC BY-NC-SA; check the dataset page",
+  "date_note": "Acquisition dates are read from each city's dates.txt.",
+  "before_date": "2016-12-09",
+  "after_date": "2018-03-09",
+  "city": "beihai"
+}

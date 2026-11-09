@@ -55,12 +55,14 @@ def paired_folders(c, pct):
 
 def xbd_local(c, pct):
     root = Path(c["root"])
-    img_dir, lab_dir = root / "images", root / "labels"
-    if not img_dir.is_dir():
-        raise FileNotFoundError(f"folder not found: {img_dir}")
-    pres = sorted(img_dir.glob("*_pre_disaster.png"))
+    if not root.is_dir():
+        raise FileNotFoundError(f"folder not found: {root}")
+    pres = sorted(root.rglob("*_pre_disaster.png"))
     if not pres:
-        raise FileNotFoundError(f"no *_pre_disaster.png files in {img_dir}")
+        raise FileNotFoundError(f"no *_pre_disaster.png files found under {root}")
+    img_dir = pres[0].parent
+    lab_dir = img_dir.parent / "labels"
+    pres = sorted(img_dir.glob("*_pre_disaster.png"))
     groups = {}
     for p in pres:
         groups.setdefault(p.name.split("_")[0], []).append(p)
@@ -85,9 +87,9 @@ def oscd_local(c, pct):
     if not root.is_dir():
         raise FileNotFoundError(f"folder not found: {root}")
     d1, d2 = c["dirs"]
-    cities = sorted(d for d in root.iterdir() if (d / d1).is_dir() and (d / d2).is_dir())
+    cities = sorted({p.parent for p in root.rglob(d1) if p.is_dir() and (p.parent / d2).is_dir()})
     if not cities:
-        raise FileNotFoundError(f"no city folder containing {d1} and {d2} under {root}")
+        raise FileNotFoundError(f"no folder containing both {d1} and {d2} found under {root}")
     for city in pick_even(cities, c["count"]):
         imgs = []
         for sub in (d1, d2):

@@ -1,0 +1,10 @@
+{
+  "dataset": "WHU-CD",
+  "kind": "building change, aerial imagery, Christchurch New Zealand",
+  "source_url": "https://gpcv.whu.edu.cn/data/building_dataset.html",
+  "license": "check the dataset page",
+  "date_note": "The source page gives April 2012 for the earlier images and the year 2016 for the later images.",
+  "before_date": "2012-04",
+  "after_date": "2016",
+  "source_file": "0_253.tif"
+}

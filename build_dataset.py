@@ -4,7 +4,7 @@ import csv
 from pathlib import Path
 import pandas as pd
 import rasterio
-from common import ensure, get_logger, load_config, load_json
+from common import dump_json, ensure, get_logger, load_config, load_json
 import discover
 import pairing
 import public_sets
@@ -123,6 +123,16 @@ def write_index(oc):
     return len(rows)
 
 
+def disk_state(oc):
+    root = Path(oc["root"])
+    counts = {}
+    for mj in root.rglob("meta.json"):
+        parts = mj.parent.relative_to(root).parts
+        key = "/".join(parts[:2]) if parts[0] == "sentinel2" else parts[0]
+        counts[key] = counts.get(key, 0) + 1
+    return {k: {"status": "ok", "pairs": n, "notes": ["restored from the pairs already saved on disk"]} for k, n in counts.items()}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
@@ -139,7 +149,13 @@ def main():
     for key, c in dcfg["public"].items():
         if c["enabled"] and (not args.only or key in args.only):
             results[key] = run_public(key, c, oc)
-    write_report(results, dcfg)
+    state_file = Path(oc["state_file"])
+    state = load_json(state_file) if state_file.exists() else {}
+    for k, v in disk_state(oc).items():
+        state.setdefault(k, v)
+    state.update(results)
+    dump_json(state, state_file)
+    write_report(state, dcfg)
     log.info("pairs in index: %d", write_index(oc))
     for k, v in results.items():
         log.info("%s: %s, %d pairs", k, v["status"], v["pairs"])
